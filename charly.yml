@@ -6,13 +6,14 @@ android-test-apps:
             Android apps installed onto a `kind: android` device via the `apk:`
             package format — the declarative counterpart to the `charly check adb
             install-app` probe verb. Carries the F-Droid client (org.fdroid.fdroid)
-            fetched from APKPure (apk-pure, no credentials) for the x86_64
-            emulator. A `target: android` deploy applies this layer's `apk:` list
+            as a COMMITTED APK (tests/data/F-Droid.apk — the canonical client from
+            f-droid.org, NOT an apkeep download), pushed over the goadb sync
+            protocol. A `target: android` deploy applies this layer's `apk:` list
             onto the running device through the external deploy:android substrate
-            (candy/plugin-adb: apkeep in-pod for an image device, host apkeep + goadb
-            for a remote endpoint). Pair with
-            the `android-apidemos` layer (committed-APK path) to exercise both
-            apk-entry kinds.
+            (candy/plugin-adb installFromHostApk: pure goadb push + pm install — no
+            apkeep, no source: — venue-agnostic for the in-pod image device AND a
+            remote endpoint). Pair with the `android-apidemos` layer (the same
+            committed-APK path) so both fixture anchors share one acquisition story.
 
             The candy installs NOTHING into the image — the `apk:` list is
             device-scoped, applied ONLY by a `target: android` deploy (skipped at
@@ -22,13 +23,17 @@ android-test-apps:
             verifiable end to end over goadb (adb).
         # apk: is the Android app-install package format (parallel to package:/aur:
         # but device-scoped). Each entry is either a `package:` (apkeep download by
-        # id) or an `apk:` (committed local file). F-Droid is the canonical
-        # sideloadable test app — unlike Chrome it has no static-library dependency,
-        # so it installs cleanly from APKPure as a single x86_64 .apk.
+        # id — apk-pure/google-play/f-droid/huawei-app-gallery sources) or an `apk:`
+        # (committed local file). F-Droid is the canonical sideloadable test app —
+        # unlike Chrome it has no static-library dependency, so the committed client
+        # APK installs cleanly on the x86_64 emulator. The former apk-pure
+        # `package:` download path is GONE: APKPure's Cloudflare bot-wall 403s the
+        # apkeep download path (host AND in-pod), while f-droid.org/F-Droid.apk is
+        # the canonical 200 source — committed here exactly once.
         apk:
-            - package: org.fdroid.fdroid
-              source: apk-pure
-              arch: x86_64
+            # Committed local APK (project-root-relative) → goadb push + pm install.
+            # No source: — committed files don't use apkeep.
+            - apk: tests/data/F-Droid.apk
         plan:
             - check: F-Droid (org.fdroid.fdroid) is installed on the device after a target:android deploy
               adb:
