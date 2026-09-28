@@ -64,7 +64,6 @@ carries.
 - `charly.yml` — the candy manifest: the `apk:` list, an ordered `plan:` of
   runtime `check:` steps, and the embedded `skill:` entity (when present).
 - `tests/data/F-Droid.apk` — the committed F-Droid client APK.
-- `.github/workflows/` — the org-wide `charly/pr-validator` gate; no per-repo candy gate.
 - `.github/workflows/tag-on-merge.yml` — CalVer tag + `CHANGELOG/` on merge.
 - `README.md` — this user overview.
 
