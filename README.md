@@ -48,12 +48,12 @@ plan:
     adb:
       method: shell
       arg: [pm, list, packages, org.fdroid.fdroid]
-    context: [deploy]
+    context: [runtime]
   - check: the installed F-Droid launches
     adb:
       method: shell
       arg: [sh, -c, "monkey -p org.fdroid.fdroid -c android.intent.category.LAUNCHER 1"]
-    context: [deploy]
+    context: [runtime]
 ```
 
 These are exactly the two `context: [runtime]` checks the candy's own `plan:`
