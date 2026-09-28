@@ -39,12 +39,25 @@ android-emulator:
       - '@github.com/opencharly/layer-android-test-apps:v2026.251.0811'
 ```
 
-After a `target: android` deploy, verify on the device:
+After a `target: android` deploy, verify on the device through charly's
+declarative `adb:` check verb — no host `adb` binary required:
 
-```bash
-adb shell pm list packages org.fdroid.fdroid
-adb shell monkey -p org.fdroid.fdroid -c android.intent.category.LAUNCHER 1
+```yaml
+plan:
+  - check: F-Droid is installed on the device
+    adb:
+      method: shell
+      arg: [pm, list, packages, org.fdroid.fdroid]
+    context: [deploy]
+  - check: the installed F-Droid launches
+    adb:
+      method: shell
+      arg: [sh, -c, "monkey -p org.fdroid.fdroid -c android.intent.category.LAUNCHER 1"]
+    context: [deploy]
 ```
+
+These are exactly the two `context: [runtime]` checks the candy's own `plan:`
+carries.
 
 ## Layout
 
@@ -58,8 +71,10 @@ adb shell monkey -p org.fdroid.fdroid -c android.intent.category.LAUNCHER 1
 
 ## Related
 
-- Owning skill: none yet (see `/charly-check:android` for the `apk:` format and
-  `target: android` deploy model)
+- Owning skill: none yet — routed to the skill-authoring batch
+  [`opencharly/opencharly#291`](https://github.com/opencharly/opencharly/issues/291);
+  meanwhile see `/charly-check:android` for the `apk:` format and
+  `target: android` deploy model
 - Sibling fixture layer: `layer-android-apidemos` (the same committed-APK path)
 - Device interaction: `/charly-check:adb`
 - [`opencharly/charly`](https://github.com/opencharly/charly) — the charly CLI and image builder
