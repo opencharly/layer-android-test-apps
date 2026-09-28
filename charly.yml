@@ -1,7 +1,5 @@
-version: 2026.232.0520
 android-test-apps:
     candy:
-        version: 2026.145.1700
         description: |
             Android apps installed onto a `kind: android` device via the `apk:`
             package format — the declarative counterpart to the `charly check adb
